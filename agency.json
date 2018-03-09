@@ -12,8 +12,7 @@
   "maxCache": 120,
   "divisions": [
     {
-      "tag": "NY",
-      "code": "nyc",
+      "code": "NY",
       "name": "New York City",
       "icon": "./img/NY.png",
       "lines": [
@@ -28,8 +27,7 @@
       ]
     },
     {
-      "tag": "MH",
-      "code": "hudson",
+      "code": "MH",
       "name": "Hudson Valley",
       "icon": "./img/MH.png",
       "lines": [
@@ -38,8 +36,7 @@
       ]
     },
     {
-      "tag": "AL",
-      "code": "albany",
+      "code": "AL",
       "name": "Albany",
       "icon": "./img/AL.png",
       "lines": [
@@ -50,8 +47,7 @@
       ]
     },
     {
-      "tag": "UT",
-      "code": "utica-rome",
+      "code": "UT",
       "name": "Utica - Rome",
       "icon": "./img/UT.png",
       "lines": [
@@ -60,8 +56,7 @@
       ]
     },
     {
-      "tag": "SY",
-      "code": "syracuse",
+      "code": "SY",
       "name": "Syracuse",
       "icon": "./img/SY.png",
       "lines": [
@@ -70,8 +65,7 @@
       ]
     },
     {
-      "tag": "RO",
-      "code": "rochester",
+      "code": "RO",
       "name": "Rochester",
       "icon": "./img/RO.png",
       "lines": [
@@ -80,8 +74,7 @@
       ]
     },
     {
-      "tag": "BU",
-      "code": "buffalo",
+      "code": "BU",
       "name": "Buffalo",
       "icon": "./img/BU.png",
       "lines": [
