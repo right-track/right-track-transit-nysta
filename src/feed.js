@@ -196,16 +196,27 @@ function _parseEvents(feed, events) {
       // Format Title
       let title = event['eventtype'].toUpperCase();
 
-      // Format Details
+      // Format Description
       let description = event['eventdesc'].replace(event['eventtype'] + ", ", "");
-      let details = "<h4>" + description + "</h4>";
+
+      // Set HTML Style
+      let style = "<style>";
+      style += "@font-face {font-family: 'Material Icons'; font-style: normal; font-weight: 400; src: url(https://fonts.gstatic.com/s/materialicons/v36/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');} .material-icons {font-family: 'Material Icons'; font-weight: normal; font-style: normal;}";
+      style += "</style>";
+
+      // Set Details HTML
+      let details = style;
+      details += "<p style='font-size: 1.25rem; font-weight: 300;'>" + description + "</p>";
       details += "<hr />";
-      details += "<p style='opacity: 0.8'>";
-      details += "<strong>Milepost:</strong> " + event['milepost'] + "<br />";
-      details += "<strong>Posted:</strong> " + event['updatetime'] + "<br />";
-      details += "<strong>Until:</strong> " + event['expirationdatetime'] + "<br />";
-      details += "<strong>Location:</strong> " + event['lat'] + ", " + event['lon'];
-      details += "</p>";
+      details += "<div style='opacity: 0.8'>";
+      details += "<p style='margin: 0;'><strong>Milepost:</strong> " + event['milepost'] + "</p>";
+      details += "<p style='margin: 0;'><strong>Posted:</strong> " + event['updatetime'] + "</p>";
+      details += "<p style='margin: 0;'><strong>Until:</strong> " + event['expirationdatetime'] + "</p>";
+      details += "<p style='margin: 0;'><strong>Location:</strong> " + event['latitude'] + ", " + event['longitude'] + "</p>";
+      details += "<p style='margin: 0;'><a href='https://www.google.com/maps/search/?api=1&query=" + event['latitude'] + "," + event['longitude'] + "'>";
+      details += "<strong><i class='material-icons'>map</i>&nbsp;View on Map</strong>";
+      details += "</a></p>";
+      details += "</div>";
 
       // Create Event
       let te = new TransitEvent(title, details);
