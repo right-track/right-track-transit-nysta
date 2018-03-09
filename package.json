@@ -1,0 +1,29 @@
+{
+  "name": "right-track-transit-nysta",
+  "version": "1.1.2",
+  "description": "Right Track Transit Agency: NYS Thruway Authority",
+  "author": "David Waring <dev@davidwaring.net> (https://davidwaring.net)",
+  "license": "MIT",
+  "main": "src/index.js",
+  "scripts": {
+    "docs": "jsdoc -c jsdoc.json --readme README.md --template $NODE_PATH/@dwaring87/docdash"
+  },
+  "dependencies": {
+    "htmlclean": "^3.0.8",
+    "right-track-transit": "^1.0.0",
+    "xml2js": "^0.4.19"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.5.5",
+    "@dwaring87/docdash": "^0.4.1"
+  },
+  "homepage": "https://righttrack.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/right-track/right-track-transit-nysta.git"
+  },
+  "bugs": {
+    "url": "https://github.com/right-track/right-track-transit-nysta/issues",
+    "email": "dev@davidwaring.net"
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "id": "nysta",
+  "name": "NYS Thruway Authority",
+  "description": "The New York State Thruway Authority operates limited-access highways throughout New York State.  These include the Thruway mainline between New York City and Ripley via Albany, Syracuse, Rochester and Buffalo.  Other segments include the Berkshire Connector, the Garden State Parkway Connector, the New England Thruway, the Cross-Westchester Expressway and the Niagara Thruway.",
+  "icon": "./img/nysta.png",
+  "maintainer": {
+    "name": "David Waring",
+    "email": "dev@davidwaring.net",
+    "source": "https://github.com/right-track/right-track-transit-nysta"
+  },
+  "url": "http://www.thruway.ny.gov/xml/netdata/events.xml",
+  "maxCache": 120,
+  "divisions": [
+    {
+      "tag": "NY",
+      "code": "nyc",
+      "name": "New York City",
+      "icon": "./img/NY.png",
+      "lines": [
+        "ML-NW",
+        "ML-SE",
+        "NE-N",
+        "NE-S",
+        "CW-E",
+        "CW-W",
+        "GS-N",
+        "GS-S"
+      ]
+    },
+    {
+      "tag": "MH",
+      "code": "hudson",
+      "name": "Hudson Valley",
+      "icon": "./img/MH.png",
+      "lines": [
+        "ML-NW",
+        "ML-SE"
+      ]
+    },
+    {
+      "tag": "AL",
+      "code": "albany",
+      "name": "Albany",
+      "icon": "./img/AL.png",
+      "lines": [
+        "ML-NW",
+        "ML-SE",
+        "B-E",
+        "B-W"
+      ]
+    },
+    {
+      "tag": "UT",
+      "code": "utica-rome",
+      "name": "Utica - Rome",
+      "icon": "./img/UT.png",
+      "lines": [
+        "ML-NW",
+        "ML-SE"
+      ]
+    },
+    {
+      "tag": "SY",
+      "code": "syracuse",
+      "name": "Syracuse",
+      "icon": "./img/SY.png",
+      "lines": [
+        "ML-NW",
+        "ML-SE"
+      ]
+    },
+    {
+      "tag": "RO",
+      "code": "rochester",
+      "name": "Rochester",
+      "icon": "./img/RO.png",
+      "lines": [
+        "ML-NW",
+        "ML-SE"
+      ]
+    },
+    {
+      "tag": "BU",
+      "code": "buffalo",
+      "name": "Buffalo",
+      "icon": "./img/BU.png",
+      "lines": [
+        "ML-NW",
+        "ML-SE",
+        "N-N",
+        "N-S"
+      ]
+    }
+  ],
+  "lines": [
+    {
+      "code": "ML-NW",
+      "name": "I-87/I-90 - NYS Thruway (NW)",
+      "backgroundColor": "#3F51B5",
+      "textColor": "#ffffff"
+    },
+    {
+      "code": "ML-SE",
+      "name": "I-87/I-90 - NYS Thruway (SE)",
+      "backgroundColor": "#3F51B5",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "code": "NE-N",
+      "name": "I-95 - New England Thruway (N)",
+      "backgroundColor": "#B71C1C",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "code": "NE-S",
+      "name": "I-95 - New England Thruway (S)",
+      "backgroundColor": "#B71C1C",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "code": "CW-E",
+      "name": "I-287 - Cross Westchester Expwy (E)",
+      "backgroundColor": "#673AB7",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "code": "CW-W",
+      "name": "I-287 - Cross Westchester Expwy (W)",
+      "backgroundColor": "#673AB7",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "code": "GS-N",
+      "name": "Garden State Parkway Connector (N)",
+      "backgroundColor": "#FFEB3B",
+      "textColor": "#000000"
+    },
+    {
+      "code": "GS-N",
+      "name": "Garden State Parkway Connector (S)",
+      "backgroundColor": "#FFEB3B",
+      "textColor": "#000000"
+    },
+    {
+      "code": "B-E",
+      "name": "Berkshire Connector (E)",
+      "backgroundColor": "#33691E",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "code": "B-W",
+      "name": "Berkshire Connector (W)",
+      "backgroundColor": "#33691E",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "code": "N-N",
+      "name": "I-190 - Niagara Thruway (N)",
+      "backgroundColor": "#880E4F",
+      "textColor": "#FFFFFF"
+    },
+    {
+      "code": "N-S",
+      "name": "I-190 - Niagara Thruway (S)",
+      "backgroundColor": "#880E4F",
+      "textColor": "#FFFFFF"
+    }
+  ]
+}
