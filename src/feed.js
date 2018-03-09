@@ -115,9 +115,6 @@ function _parse(xml, callback) {
 }
 
 
-// TODO: Create separate line definitions for each division/region
-
-
 /**
  * Create the Divisions (with Lines set)
  * @returns {TransitDivision[]} List of Transit Divisions
@@ -151,14 +148,18 @@ function _createDivisions() {
         if ( lineCode === props.lines[k].code ) {
 
           // CREATE LINE
-          divLines.push(
-            new TransitLine(
-              props.lines[k].code,
-              props.lines[k].name,
-              props.lines[k].backgroundColor,
-              props.lines[k].textColor
-            )
+          let line = new TransitLine(
+            props.lines[k].code,
+            props.lines[k].name,
+            props.lines[k].backgroundColor,
+            props.lines[k].textColor
           );
+
+          // Set default status
+          line.status = "No Alerts";
+
+          // Add line to list of Division Lines
+          divLines.push(line);
 
         }
       }
@@ -265,6 +266,13 @@ function _addEventToFeed(feed, transitEvent, eventProps) {
         // Line Matches...
         if ( nameCode.toLowerCase().indexOf(routeCode.toLowerCase()) > -1 ) {
           if ( dir.indexOf(directionCode) !== -1 ) {
+
+            // Set Status
+            let current = feed.divisions[j].lines[k].status;
+            let status = eventProps['category'].toUpperCase();
+            if ( !current || current === "No Alerts" || current === "ROADWORK" ) {
+              feed.divisions[j].lines[k].status = status;
+            }
 
             // Add Event to Line
             feed.divisions[j].lines[k].events.push(transitEvent);
