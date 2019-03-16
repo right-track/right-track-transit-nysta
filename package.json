@@ -9,7 +9,7 @@
     "docs": "jsdoc -c jsdoc.json --readme README.md --template $NODE_PATH/@dwaring87/docdash"
   },
   "dependencies": {
-    "right-track-transit": "^1.0.0",
+    "right-track-transit": "^1.1.2",
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
