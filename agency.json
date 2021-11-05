@@ -8,7 +8,7 @@
     "email": "dev@davidwaring.net",
     "source": "https://github.com/right-track/right-track-transit-nysta"
   },
-  "url": "http://www.thruway.ny.gov/xml/netdata/events.xml",
+  "url": "https://www.thruway.ny.gov/xml/netdata/events.xml",
   "maxCache": 120,
   "divisions": [
     {
