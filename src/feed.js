@@ -1,6 +1,6 @@
 'use strict';
 
-const http = require('http');
+const https = require('https');
 const parseXML = require('xml2js').parseString;
 const props = require('../agency.json');
 
@@ -309,7 +309,7 @@ function _addEventToFeed(feed, transitEvent, eventProps) {
 function _download(callback) {
 
   // Make the get request
-  http.get(props.url, function(response) {
+  https.get(props.url, function(response) {
     let body = "";
     response.on("data", function(data) {
       body += data;
