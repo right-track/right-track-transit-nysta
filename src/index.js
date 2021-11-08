@@ -22,13 +22,7 @@ class NYSTA extends RightTrackTransitAgency {
    * Create a `RightTrackTransitAgency` for NYSTA
    */
   constructor() {
-    super(
-      props.id,
-      props.name,
-      props.description,
-      path.normalize(propsDir + '/' + props.icon),
-      props.maintainer
-    );
+    super(propsDir);
   }
 
   /**
