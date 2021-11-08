@@ -24,6 +24,9 @@ This example builds a `TransitFeed` for NYSTA:
 ```javascript
 const nysta = require('right-track-transit-nysta');
 
+// Optional: override default agency config
+nysta.readConfig('/path/to/agency_local.json');
+
 nysta.loadFeed(function(err, feed) {
   if ( !err ) {
     console.log(JSON.stringify(feed, null, 2));
