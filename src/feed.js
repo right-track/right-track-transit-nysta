@@ -2,13 +2,14 @@
 
 const https = require('https');
 const parseXML = require('xml2js').parseString;
-const props = require('../agency.json');
 
 const TF = require('right-track-transit/src/TransitFeed');
 const TransitFeed = TF.TransitFeed;
 const TransitDivision = TF.TransitDivision;
-const TransitLine = TF.TransitLine;
 const TransitEvent = TF.TransitEvent;
+
+// Agency Config
+let CONFIG = {};
 
 
 // Feed Cache
@@ -18,17 +19,21 @@ let CACHE_UPDATED = new Date(0);
 
 /**
  * Load the NYSTA Transit Feed
+ * @param {Object} config Transit Agency config
  * @param {function} callback Callback function
- * @param {Error} callback.error Transit Feed Error. The Error's message will be a pipe (|) separated
+ * @param {Error} [callback.error] Transit Feed Error. The Error's message will be a pipe (|) separated
  * string in the format of: Error Code|Error Type|Error Message that will be parsed out by the Right
  * Track API Server into a more specific error Response.
  * @param {TransitFeed} [callback.feed] The built Transit Feed for NYSTA
  */
-function loadFeed(callback) {
+function loadFeed(config, callback) {
+
+  // Set Config
+  CONFIG = config;
 
   // Return Cached Feed
   if ( CACHE !== undefined &&
-    CACHE_UPDATED.getTime() >= (new Date().getTime() - (props.maxCache*1000)) ) {
+    CACHE_UPDATED.getTime() >= (new Date().getTime() - (CONFIG.maxCache*1000)) ) {
     return callback(null, CACHE);
   }
 
@@ -122,59 +127,56 @@ function _parse(xml, callback) {
  */
 function _createDivisions() {
 
-  // Load the Transit Agency
-  const TA = require('./index.js');
-
   // Divisions to Return
-  let divisions = [];
+  let regions = [];
 
-  // Parse the divisions from the config
-  for ( let i = 0; i < props.divisions.length; i++ ) {
+  // Parse the regions from the config
+  for ( let i = 0; i < CONFIG.regions.length; i++ ) {
 
-    // CREATE DIVISION
-    let div = new TransitDivision(
-      props.divisions[i].code,
-      props.divisions[i].name,
-      TA.getDivisionIconPath(props.divisions[i].code)
+    // CREATE TOP-LEVEL DIVISION FROM REGION
+    let region = new TransitDivision(
+      CONFIG.regions[i].code,
+      CONFIG.regions[i].name,
+      CONFIG.regions[i].icon
     );
 
-    // Get the Division's Lines
-    let divLines = [];
-    for ( let j = 0; j < props.divisions[i].lines.length; j++ ) {
-      let lineCode = props.divisions[i].lines[j];
+    // Get the region's highways
+    let highways = [];
+    for ( let j = 0; j < CONFIG.regions[i].highways.length; j++ ) {
+      let highwayCode = CONFIG.regions[i].highways[j];
 
-      // Find Line Definition
-      for ( let k = 0; k < props.lines.length; k++ ) {
-        if ( lineCode === props.lines[k].code ) {
+      // Find Highway Definition
+      for ( let k = 0; k < CONFIG.highways.length; k++ ) {
+        if ( highwayCode === CONFIG.highways[k].code ) {
 
-          // CREATE LINE
-          let line = new TransitLine(
-            props.lines[k].code,
-            props.lines[k].name,
-            props.lines[k].backgroundColor,
-            props.lines[k].textColor
+          // CREATE 2ND-LEVEL DIVISION FROM HIGHWAY
+          let highway = new TransitDivision(
+            CONFIG.highways[k].code,
+            CONFIG.highways[k].name,
+            CONFIG.highways[k].backgroundColor,
+            CONFIG.highways[k].textColor
           );
 
           // Set default status
-          line.status = "No Alerts";
+          highway.status = "No Alerts";
 
-          // Add line to list of Division Lines
-          divLines.push(line);
+          // Add highway to list of region highways
+          highways.push(highway);
 
         }
       }
 
     }
 
-    // Add the Lines to the Division
-    div.lines = divLines;
+    // Add the highways to the region's divisions
+    region.divisions = highways;
 
-    // Add the Division to the List
-    divisions.push(div);
+    // Add the region to the List
+    regions.push(region);
   }
 
-  // Return the Divisions
-  return divisions;
+  // Return the regions
+  return regions;
 
 }
 
@@ -243,14 +245,14 @@ function _parseEvents(feed, events) {
  */
 function _addEventToFeed(feed, transitEvent, eventProps) {
 
-  // Find matching division
-  let divCode = eventProps['region'];
+  // Find matching region
+  let regionCode = eventProps['region'];
   for ( let j = 0; j < feed.divisions.length; j++ ) {
 
-    // Division Matches....
-    if ( feed.divisions[j].code === divCode ) {
+    // Region Matches....
+    if ( feed.divisions[j].code === regionCode ) {
 
-      // Find matching line
+      // Find matching highway
       let route = eventProps['route'];
       let routeCode = route.indexOf('-') > -1 ? route.substr(route.lastIndexOf('-')) : route;
       let direction = eventProps['direction'];
@@ -268,25 +270,25 @@ function _addEventToFeed(feed, transitEvent, eventProps) {
         directionCode = "W";
       }
 
-      // Parse the Division's Lines
-      for ( let k = 0; k < feed.divisions[j].lines.length; k++ ) {
-        let name = feed.divisions[j].lines[k].name;
+      // Parse the region's highways
+      for ( let k = 0; k < feed.divisions[j].divisions.length; k++ ) {
+        let name = feed.divisions[j].divisions[k].name;
         let nameCode = name.indexOf('-') > -1 ? name.substr(name.lastIndexOf("-")) : name;
         let dir = name.substr(name.lastIndexOf('('));
 
-        // Line Matches...
+        // Highway Division Matches...
         if ( nameCode.toLowerCase().indexOf(routeCode.toLowerCase()) > -1 ) {
           if ( dir.indexOf(directionCode) !== -1 ) {
 
             // Set Status
-            let current = feed.divisions[j].lines[k].status;
+            let current = feed.divisions[j].divisions[k].status;
             let status = eventProps['category'].toUpperCase();
             if ( !current || current === "No Alerts" || current === "ROADWORK" ) {
-              feed.divisions[j].lines[k].status = status;
+              feed.divisions[j].divisions[k].status = status;
             }
 
             // Add Event to Line
-            feed.divisions[j].lines[k].events.push(transitEvent);
+            feed.divisions[j].divisions[k].events.push(transitEvent);
 
           }
         }
@@ -309,7 +311,7 @@ function _addEventToFeed(feed, transitEvent, eventProps) {
 function _download(callback) {
 
   // Make the get request
-  https.get(props.url, function(response) {
+  https.get(CONFIG.url, function(response) {
     let body = "";
     response.on("data", function(data) {
       body += data;

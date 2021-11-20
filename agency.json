@@ -10,12 +10,12 @@
   },
   "url": "https://www.thruway.ny.gov/xml/netdata/events.xml",
   "maxCache": 120,
-  "divisions": [
+  "regions": [
     {
       "code": "NY",
       "name": "New York City",
       "icon": "./img/NY.png",
-      "lines": [
+      "highways": [
         "ML-NW",
         "ML-SE",
         "NE-N",
@@ -30,7 +30,7 @@
       "code": "MH",
       "name": "Hudson Valley",
       "icon": "./img/MH.png",
-      "lines": [
+      "highways": [
         "ML-NW",
         "ML-SE"
       ]
@@ -39,7 +39,7 @@
       "code": "AL",
       "name": "Albany",
       "icon": "./img/AL.png",
-      "lines": [
+      "highways": [
         "ML-NW",
         "ML-SE",
         "B-E",
@@ -50,7 +50,7 @@
       "code": "UT",
       "name": "Utica - Rome",
       "icon": "./img/UT.png",
-      "lines": [
+      "highways": [
         "ML-NW",
         "ML-SE"
       ]
@@ -59,7 +59,7 @@
       "code": "SY",
       "name": "Syracuse",
       "icon": "./img/SY.png",
-      "lines": [
+      "highways": [
         "ML-NW",
         "ML-SE"
       ]
@@ -68,7 +68,7 @@
       "code": "RO",
       "name": "Rochester",
       "icon": "./img/RO.png",
-      "lines": [
+      "highways": [
         "ML-NW",
         "ML-SE"
       ]
@@ -77,7 +77,7 @@
       "code": "BU",
       "name": "Buffalo",
       "icon": "./img/BU.png",
-      "lines": [
+      "highways": [
         "ML-NW",
         "ML-SE",
         "N-N",
@@ -85,7 +85,7 @@
       ]
     }
   ],
-  "lines": [
+  "highways": [
     {
       "code": "ML-NW",
       "name": "I-87/I-90 - NYS Thruway (NW)",
