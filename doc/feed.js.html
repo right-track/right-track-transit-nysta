@@ -23,7 +23,7 @@
 <label for="nav-trigger" class="overlay"></label>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NYSTA.html">NYSTA</a><ul class='methods'><li data-type='method'><a href="NYSTA.html#getDivisionIconPath">getDivisionIconPath</a></li><li data-type='method'><a href="NYSTA.html#getLineBackgroundColor">getLineBackgroundColor</a></li><li data-type='method'><a href="NYSTA.html#getLineTextColor">getLineTextColor</a></li><li data-type='method'><a href="NYSTA.html#loadFeed">loadFeed</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#loadFeed">loadFeed</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="NYSTA.html">NYSTA</a><ul class='methods'><li data-type='method'><a href="NYSTA.html#loadFeed">loadFeed</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#_title">_title</a></li><li><a href="global.html#loadFeed">loadFeed</a></li></ul>
 </nav>
 
 <div id="main">
@@ -42,13 +42,14 @@
 
 const https = require('https');
 const parseXML = require('xml2js').parseString;
-const props = require('../agency.json');
 
 const TF = require('right-track-transit/src/TransitFeed');
 const TransitFeed = TF.TransitFeed;
 const TransitDivision = TF.TransitDivision;
-const TransitLine = TF.TransitLine;
 const TransitEvent = TF.TransitEvent;
+
+// Agency Config
+let CONFIG = {};
 
 
 // Feed Cache
@@ -58,17 +59,21 @@ let CACHE_UPDATED = new Date(0);
 
 /**
  * Load the NYSTA Transit Feed
+ * @param {Object} config Transit Agency config
  * @param {function} callback Callback function
- * @param {Error} callback.error Transit Feed Error. The Error's message will be a pipe (|) separated
+ * @param {Error} [callback.error] Transit Feed Error. The Error's message will be a pipe (|) separated
  * string in the format of: Error Code|Error Type|Error Message that will be parsed out by the Right
  * Track API Server into a more specific error Response.
  * @param {TransitFeed} [callback.feed] The built Transit Feed for NYSTA
  */
-function loadFeed(callback) {
+function loadFeed(config, callback) {
+
+  // Set Config
+  CONFIG = config;
 
   // Return Cached Feed
   if ( CACHE !== undefined &amp;&amp;
-    CACHE_UPDATED.getTime() >= (new Date().getTime() - (props.maxCache*1000)) ) {
+    CACHE_UPDATED.getTime() >= (new Date().getTime() - (CONFIG.maxCache*1000)) ) {
     return callback(null, CACHE);
   }
 
@@ -162,59 +167,56 @@ function _parse(xml, callback) {
  */
 function _createDivisions() {
 
-  // Load the Transit Agency
-  const TA = require('./index.js');
-
   // Divisions to Return
-  let divisions = [];
+  let regions = [];
 
-  // Parse the divisions from the config
-  for ( let i = 0; i &lt; props.divisions.length; i++ ) {
+  // Parse the regions from the config
+  for ( let i = 0; i &lt; CONFIG.regions.length; i++ ) {
 
-    // CREATE DIVISION
-    let div = new TransitDivision(
-      props.divisions[i].code,
-      props.divisions[i].name,
-      TA.getDivisionIconPath(props.divisions[i].code)
+    // CREATE TOP-LEVEL DIVISION FROM REGION
+    let region = new TransitDivision(
+      CONFIG.regions[i].code,
+      CONFIG.regions[i].name,
+      CONFIG.regions[i].icon
     );
 
-    // Get the Division's Lines
-    let divLines = [];
-    for ( let j = 0; j &lt; props.divisions[i].lines.length; j++ ) {
-      let lineCode = props.divisions[i].lines[j];
+    // Get the region's highways
+    let highways = [];
+    for ( let j = 0; j &lt; CONFIG.regions[i].highways.length; j++ ) {
+      let highwayCode = CONFIG.regions[i].highways[j];
 
-      // Find Line Definition
-      for ( let k = 0; k &lt; props.lines.length; k++ ) {
-        if ( lineCode === props.lines[k].code ) {
+      // Find Highway Definition
+      for ( let k = 0; k &lt; CONFIG.highways.length; k++ ) {
+        if ( highwayCode === CONFIG.highways[k].code ) {
 
-          // CREATE LINE
-          let line = new TransitLine(
-            props.lines[k].code,
-            props.lines[k].name,
-            props.lines[k].backgroundColor,
-            props.lines[k].textColor
+          // CREATE 2ND-LEVEL DIVISION FROM HIGHWAY
+          let highway = new TransitDivision(
+            CONFIG.highways[k].code,
+            CONFIG.highways[k].name,
+            CONFIG.highways[k].backgroundColor,
+            CONFIG.highways[k].textColor
           );
 
           // Set default status
-          line.status = "No Alerts";
+          highway.status = "No Alerts";
 
-          // Add line to list of Division Lines
-          divLines.push(line);
+          // Add highway to list of region highways
+          highways.push(highway);
 
         }
       }
 
     }
 
-    // Add the Lines to the Division
-    div.lines = divLines;
+    // Add the highways to the region's divisions
+    region.divisions = highways;
 
-    // Add the Division to the List
-    divisions.push(div);
+    // Add the region to the List
+    regions.push(region);
   }
 
-  // Return the Divisions
-  return divisions;
+  // Return the regions
+  return regions;
 
 }
 
@@ -234,7 +236,7 @@ function _parseEvents(feed, events) {
       let event = events[i]['$'];
 
       // Format Title
-      let title = event['eventtype'].toUpperCase();
+      let title = _title(event['eventtype']);
 
       // Format Description
       let description = event['eventdesc'].replace(event['eventtype'] + ", ", "");
@@ -246,15 +248,14 @@ function _parseEvents(feed, events) {
 
       // Set Details HTML
       let details = style;
-      details += "&lt;p style='font-size: 1.25rem; font-weight: 300;'>" + description + "&lt;/p>";
-      details += "&lt;hr />";
-      details += "&lt;div style='opacity: 0.8'>";
-      details += "&lt;p style='margin: 0;'>&lt;strong>Milepost:&lt;/strong> " + event['milepost'] + "&lt;/p>";
-      details += "&lt;p style='margin: 0;'>&lt;strong>Posted:&lt;/strong> " + event['updatetime'] + "&lt;/p>";
-      details += "&lt;p style='margin: 0;'>&lt;strong>Until:&lt;/strong> " + event['expirationdatetime'] + "&lt;/p>";
-      details += "&lt;p style='margin: 0;'>&lt;strong>Location:&lt;/strong> " + event['latitude'] + ", " + event['longitude'] + "&lt;/p>";
-      details += "&lt;p style='margin: 0;'>&lt;a href='https://www.google.com/maps/search/?api=1&amp;query=" + event['latitude'] + "," + event['longitude'] + "'>";
-      details += "&lt;strong>&lt;i class='material-icons'>map&lt;/i>&amp;nbsp;View on Map&lt;/strong>";
+      details += "&lt;div class='event-details-description'>" + description + "&lt;/div>";
+      details += "&lt;div class='event-details-info'>"
+      details += "&lt;p>&lt;strong>Milepost:&lt;/strong> " + event['milepost'] + "&lt;/p>";
+      details += "&lt;p>&lt;strong>Posted:&lt;/strong> " + event['updatetime'] + "&lt;/p>";
+      details += "&lt;p>&lt;strong>Until:&lt;/strong> " + event['expirationdatetime'] + "&lt;/p>";
+      details += "&lt;p>&lt;strong>Location:&lt;/strong> ";
+      details += "&lt;a href='https://www.google.com/maps/search/?api=1&amp;query=" + event['latitude'] + "," + event['longitude'] + "&amp;zoom=15&amp;layer=traffic' target='_blank'>";
+      details += event['latitude'] + ", " + event['longitude'];
       details += "&lt;/a>&lt;/p>";
       details += "&lt;/div>";
 
@@ -283,14 +284,14 @@ function _parseEvents(feed, events) {
  */
 function _addEventToFeed(feed, transitEvent, eventProps) {
 
-  // Find matching division
-  let divCode = eventProps['region'];
+  // Find matching region
+  let regionCode = eventProps['region'];
   for ( let j = 0; j &lt; feed.divisions.length; j++ ) {
 
-    // Division Matches....
-    if ( feed.divisions[j].code === divCode ) {
+    // Region Matches....
+    if ( feed.divisions[j].code === regionCode ) {
 
-      // Find matching line
+      // Find matching highway
       let route = eventProps['route'];
       let routeCode = route.indexOf('-') > -1 ? route.substr(route.lastIndexOf('-')) : route;
       let direction = eventProps['direction'];
@@ -308,25 +309,25 @@ function _addEventToFeed(feed, transitEvent, eventProps) {
         directionCode = "W";
       }
 
-      // Parse the Division's Lines
-      for ( let k = 0; k &lt; feed.divisions[j].lines.length; k++ ) {
-        let name = feed.divisions[j].lines[k].name;
+      // Parse the region's highways
+      for ( let k = 0; k &lt; feed.divisions[j].divisions.length; k++ ) {
+        let name = feed.divisions[j].divisions[k].name;
         let nameCode = name.indexOf('-') > -1 ? name.substr(name.lastIndexOf("-")) : name;
         let dir = name.substr(name.lastIndexOf('('));
 
-        // Line Matches...
+        // Highway Division Matches...
         if ( nameCode.toLowerCase().indexOf(routeCode.toLowerCase()) > -1 ) {
           if ( dir.indexOf(directionCode) !== -1 ) {
 
             // Set Status
-            let current = feed.divisions[j].lines[k].status;
+            let current = feed.divisions[j].divisions[k].status;
             let status = eventProps['category'].toUpperCase();
             if ( !current || current === "No Alerts" || current === "ROADWORK" ) {
-              feed.divisions[j].lines[k].status = status;
+              feed.divisions[j].divisions[k].status = status;
             }
 
             // Add Event to Line
-            feed.divisions[j].lines[k].events.push(transitEvent);
+            feed.divisions[j].divisions[k].events.push(transitEvent);
 
           }
         }
@@ -349,7 +350,7 @@ function _addEventToFeed(feed, transitEvent, eventProps) {
 function _download(callback) {
 
   // Make the get request
-  https.get(props.url, function(response) {
+  https.get(CONFIG.url, function(response) {
     let body = "";
     response.on("data", function(data) {
       body += data;
@@ -366,6 +367,17 @@ function _download(callback) {
 }
 
 
+/**
+ * Convert a string to Title Case
+ * @param {String} str String to convert
+ * @returns {String}
+ */
+function _title(str) {
+  return str.toLowerCase().split(' ').map(function(word) {
+    return word.replace(word[0], word[0].toUpperCase());
+  }).join(' ');
+}
+
 module.exports = loadFeed;
 </code></pre>
         </article>
@@ -379,7 +391,7 @@ module.exports = loadFeed;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Nov 08 2021 09:30:00 GMT-0500 (Eastern Standard Time) using the <a href="https://github.com/dwaring87/docdash">@dwaring87/docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Dec 03 2021 17:12:34 GMT-0500 (Eastern Standard Time) using the <a href="https://github.com/dwaring87/docdash">@dwaring87/docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
