@@ -196,7 +196,7 @@ function _parseEvents(feed, events) {
       let event = events[i]['$'];
 
       // Format Title
-      let title = event['eventtype'].toUpperCase();
+      let title = _title(event['eventtype']);
 
       // Format Description
       let description = event['eventdesc'].replace(event['eventtype'] + ", ", "");
@@ -208,15 +208,14 @@ function _parseEvents(feed, events) {
 
       // Set Details HTML
       let details = style;
-      details += "<p style='font-size: 1.25rem; font-weight: 300;'>" + description + "</p>";
-      details += "<hr />";
-      details += "<div style='opacity: 0.8'>";
-      details += "<p style='margin: 0;'><strong>Milepost:</strong> " + event['milepost'] + "</p>";
-      details += "<p style='margin: 0;'><strong>Posted:</strong> " + event['updatetime'] + "</p>";
-      details += "<p style='margin: 0;'><strong>Until:</strong> " + event['expirationdatetime'] + "</p>";
-      details += "<p style='margin: 0;'><strong>Location:</strong> " + event['latitude'] + ", " + event['longitude'] + "</p>";
-      details += "<p style='margin: 0;'><a href='https://www.google.com/maps/search/?api=1&query=" + event['latitude'] + "," + event['longitude'] + "'>";
-      details += "<strong><i class='material-icons'>map</i>&nbsp;View on Map</strong>";
+      details += "<div class='event-details-description'>" + description + "</div>";
+      details += "<div class='event-details-info'>"
+      details += "<p><strong>Milepost:</strong> " + event['milepost'] + "</p>";
+      details += "<p><strong>Posted:</strong> " + event['updatetime'] + "</p>";
+      details += "<p><strong>Until:</strong> " + event['expirationdatetime'] + "</p>";
+      details += "<p><strong>Location:</strong> ";
+      details += "<a href='https://www.google.com/maps/search/?api=1&query=" + event['latitude'] + "," + event['longitude'] + "&zoom=15&layer=traffic' target='_blank'>";
+      details += event['latitude'] + ", " + event['longitude'];
       details += "</a></p>";
       details += "</div>";
 
@@ -327,5 +326,16 @@ function _download(callback) {
 
 }
 
+
+/**
+ * Convert a string to Title Case
+ * @param {String} str String to convert
+ * @returns {String}
+ */
+function _title(str) {
+  return str.toLowerCase().split(' ').map(function(word) {
+    return word.replace(word[0], word[0].toUpperCase());
+  }).join(' ');
+}
 
 module.exports = loadFeed;
