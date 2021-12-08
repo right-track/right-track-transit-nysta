@@ -1,10 +1,9 @@
-<!-- start:readme.hbs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-		<title>Right Track Transit: NYSTA</title>
+		<title>Classes</title>
 		<!--[if lt IE 9]>
 		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
@@ -93,38 +92,32 @@
 	</header>
 	<!-- end:navbar.hbs -->		<div class="page-header">
 			<div class="container">
-				<span class="kind">readme</span>
-				<h1><span class="name">Right Track Transit: NYSTA</span></h1>
-				<div class="summary"><p>A Right Track Transit Agency implementation for the NYS Thruway Authority</p></div>			</div>
+				<span class="kind">list</span>
+				<h1><span class="name">Classes</span></h1>
+				<div class="summary"><p>All documented classes.</p></div>			</div>
 		</div>
 	<div class="container content">
 		<div class="row">
 			<div class="col-md-9 main-content">
-		<section class="readme-section">
-			<article><h1>NYS Thruway Authority</h1>
-<p><strong>GitHub repo:</strong> <a href="https://github.com/right-track/right-track-transit-nysta">right-track/right-track-transit-nysta</a></p>
-<hr>
-<p>This module is an implementation of a <a href="https://github.com/right-track/right-track-core#right-track-transit-agency"><em>RightTrackTransitAgency</em></a>
-used to create a real-time Transit Feed for the <strong>New York State Thruway Authority</strong>, which is used in the various
-<a href="https://github.com/right-track">Right Track Projects</a>.</p>
-<h3>Documentation</h3>
-<p>Documentation about the <code>RightTrackTransitAgency</code> class and <code>TransitFeed</code> classes can be found in the
-<a href="https://github.com/right-track/right-track-core">right-track-core</a> project
-and online at <a href="https://docs.righttrack.io/right-track-core">https://docs.righttrack.io/right-track-core</a>.</p>
-<h3>Usage</h3>
-<p>This example builds a <code>TransitFeed</code> for NYSTA:</p>
-<pre class="prettyprint source lang-javascript"><code>const nysta = require('right-track-transit-nysta');
-
-// Optional: override default agency config
-nysta.readConfig('/path/to/agency_local.json');
-
-nysta.loadFeed(function(err, feed) {
-  if ( !err ) {
-    console.log(JSON.stringify(feed, null, 2));
-  }
-});
-</code></pre></article>
-		</section>
+						<ol class="breadcrumb">
+							<li><a href="index.html">Home</a></li>
+							<li class="active">Classes</li>
+						</ol>
+					<section>
+		<h2><span class="name">Classes</span></h2>
+		<article class="secondary">
+				<dl class="symbol">
+						
+						<dt class="symbol-title class public">
+			<h4 id="NYSTA" class="class public"><a href="NYSTA.html"><span class="signature-new">new&nbsp;</span><span class="name">NYSTA</span><span class="signature-params">()</span><span class="signature-type"></span></a></h4>
+</dt>
+<dd class="symbol-details class public">
+	<div class="symbol-details-inner">
+	</div>
+</dd>
+				</dl>
+		</article>
+					</section>
 			</div>
 				<div class="col-md-3 side-content">
 					<nav class="toc hidden-print hidden-sm hidden-xs"></nav>
@@ -161,4 +154,3 @@ nysta.loadFeed(function(err, feed) {
 	
 </body>
 </html>
-<!-- end:readme.hbs -->
