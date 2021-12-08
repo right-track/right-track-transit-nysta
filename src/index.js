@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const RightTrackTransitAgency = require('right-track-transit');
+const RightTrackTransitAgency = require('right-track-core/modules/classes/RightTrackTransitAgency');
 const feed = require('./feed.js');
 
 const moduleDirectory = __dirname + "/../";
