@@ -9,7 +9,7 @@
     "docs": "jsdoc -c jsdoc.json"
   },
   "dependencies": {
-    "right-track-core": "github:right-track/right-track-core",
+    "right-track-core": "right-track/right-track-core",
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
